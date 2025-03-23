@@ -30,20 +30,42 @@
               <img src="pokemon-seeklogo.png" alt="" style="width: 100%" />
             </div>
           </div>
-          <div>
-            <div class="row justify-content-center mt-5">
-              <div class="col-6">
-                <input
-                  type="text"
-                  class="form-control"
-                  placeholder="search pokemon"
-                />
-              </div>
-            </div class="main mt-5 pt-5">
-            <div class="view-all text-white">
-              {{pokemonList}}
+
+          <div class="row justify-content-center mt-5">
+            <div class="col-6">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="search pokemon"
+              />
             </div>
-            <div class="view-detail text-white">test</div>
+          </div>
+
+          <div class="main mt-5 pt-5">
+            <div class="view-all text-white" v-if="!viewAsDetail">
+              <div class="row px-5">
+                <div
+                  class="col-12 col-md-4 col-lg-3 mb-3"
+                  v-for="items in pokemonList"
+                  @click="viewDetailPokemon(items.name)"
+                >
+                  <div class="card text-center text-white">
+                    <img :src="items.sprites.front_default" alt="" />
+                    <label style="font-size: 18px">{{items.name}}</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="view-detail text-white" v-else>
+              <div class="mb-5">
+                <button @click="viewAsDetail = false">View All Pokemon</button>
+              </div>
+              <div class="row">
+                <div class="col-12 col-md-6">a</div>
+                <div class="col-12 col-md-6">b</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -53,36 +75,43 @@
       createApp({
         data() {
           return {
-            pokemonList: []
+            pokemonList: [],
+            viewAsDetail: false,
           };
         },
-        //cara untuk memanggil 
+        //cara untuk memanggil
         //methods digunakan untuk merapikan
         methods: {
           // Pengambilan Data Asinkron lewat async dan await untuk mengambil data dari API.
           async getListPokemon() {
             //let response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=30") cara menambah data yang didapatkan
-            let response = await fetch("https://pokeapi.co/api/v2/pokemon")
+            let response = await fetch("https://pokeapi.co/api/v2/pokemon");
             let data = await response.json();
-            let results = data.results
-            //let test = this.getEachPokemon        ini cara yang pake function biasa harus ditampung dulu kedalam sebuah variabel untuk menampung function getEachPokemon 
+            let results = data.results;
+            //let test = this.getEachPokemon        ini cara yang pake function biasa harus ditampung dulu kedalam sebuah variabel untuk menampung function getEachPokemon
             //results.forEach(function (results){
             //  test(results)
             //});
 
-            //ni cara arrow function maka tidak perlu ditampung kedalam vaiabel 
-            results.forEach(item => {
-              this.getEachPokemon(item)
+            //ni cara arrow function maka tidak perlu ditampung kedalam vaiabel
+            results.forEach((item) => {
+              this.getEachPokemon(item);
             });
-        },
-        async getEachPokemon(result){
-          let response = await fetch("https://pokeapi.co/api/v2/pokemon/"+result.name)
-          let data = await response.json();
-          this.pokemonList.push(data)
-        }
+          },
+          async getEachPokemon(result) {
+            let response = await fetch(
+              "https://pokeapi.co/api/v2/pokemon/" + result.name
+            );
+            let data = await response.json();
+            this.pokemonList.push(data);
+            this.pokemonList.sort((a, b) => a.id - b.id);
+          },
+          viewDetailPokemon(pokemon) {
+            this.viewAsDetail = true;
+          },
         },
         mounted() {
-          this.getListPokemon()// Memanggil metode di mounted()
+          this.getListPokemon(); // Memanggil metode methods di mounted()
         },
       }).mount("#app");
     </script>
