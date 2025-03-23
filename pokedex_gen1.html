@@ -4,6 +4,87 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pokedex</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
   </head>
-  <body></body>
+  <style>
+    .card {
+      background: rgba(255, 255, 255, 0.21);
+      border-radius: 10px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(9px);
+      border-left: 2px solid rgba(255, 255, 255, 0.58);
+      border-top: 2px solid rgba(255, 255, 255, 0.58);
+    }
+  </style>
+  <body>
+    <div id="app">
+      <div class="container-fluid bg-dark bg-gradient">
+        <div class="container bg-dark" style="min-height: 100vh">
+          <div class="row justify-content-center">
+            <div class="col-5">
+              <img src="pokemon-seeklogo.png" alt="" style="width: 100%" />
+            </div>
+          </div>
+          <div>
+            <div class="row justify-content-center mt-5">
+              <div class="col-6">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="search pokemon"
+                />
+              </div>
+            </div class="main mt-5 pt-5">
+            <div class="view-all text-white">
+              {{pokemonList}}
+            </div>
+            <div class="view-detail text-white">test</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module">
+      import { createApp } from "https://unpkg.com/vue@3/dist/vue.esm-browser.js";
+      createApp({
+        data() {
+          return {
+            pokemonList: []
+          };
+        },
+        //cara untuk memanggil 
+        //methods digunakan untuk merapikan
+        methods: {
+          // Pengambilan Data Asinkron lewat async dan await untuk mengambil data dari API.
+          async getListPokemon() {
+            //let response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=30") cara menambah data yang didapatkan
+            let response = await fetch("https://pokeapi.co/api/v2/pokemon")
+            let data = await response.json();
+            let results = data.results
+            //let test = this.getEachPokemon        ini cara yang pake function biasa harus ditampung dulu kedalam sebuah variabel untuk menampung function getEachPokemon 
+            //results.forEach(function (results){
+            //  test(results)
+            //});
+
+            //ni cara arrow function maka tidak perlu ditampung kedalam vaiabel 
+            results.forEach(item => {
+              this.getEachPokemon(item)
+            });
+        },
+        async getEachPokemon(result){
+          let response = await fetch("https://pokeapi.co/api/v2/pokemon/"+result.name)
+          let data = await response.json();
+          this.pokemonList.push(data)
+        }
+        },
+        mounted() {
+          this.getListPokemon()// Memanggil metode di mounted()
+        },
+      }).mount("#app");
+    </script>
+  </body>
 </html>
