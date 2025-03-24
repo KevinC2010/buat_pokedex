@@ -104,7 +104,6 @@
             gen1Pokemon: [],
           };
         },
-        //cara untuk memanggil
         //methods digunakan untuk merapikan
         methods: {
           // Pengambilan Data Asinkron lewat async dan await untuk mengambil data dari API.
@@ -152,14 +151,15 @@
         },
         watch: {
           search() {
-            let filteredPokemon = this.gen1Pokemon.filter((item) => {
-              return item[0].name.includes(this.search);
-            });
+            console.log(this.search);
+            // let filteredPokemon = this.gen1Pokemon.filter((item) => {
+            //   return item[0].name.includes(this.search);
+            // });
           },
         },
         mounted() {
           this.getListPokemon(); // Memanggil metode methods di mounted()
-          this.Gen1Pokemon();
+          this.getGen1Pokemon();
         },
       }).mount("#app");
     </script>
