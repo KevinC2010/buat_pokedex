@@ -31,13 +31,17 @@
             </div>
           </div>
 
-          <div class="row justify-content-center mt-5">
+          <div class="row justify-content-center mt-5 text-white">
             <div class="col-6">
               <input
                 type="text"
                 class="form-control"
                 placeholder="search pokemon"
+                v-model="search"
               />
+              <div class="mt-2">
+                <label for="">suggestion: </label>
+              </div>
             </div>
           </div>
 
@@ -62,8 +66,26 @@
                 <button @click="viewAsDetail = false">View All Pokemon</button>
               </div>
               <div class="row">
-                <div class="col-12 col-md-6">a</div>
-                <div class="col-12 col-md-6">b</div>
+                <div class="col-12 col-md-6">
+                  <div class="card">
+                    <img :src="seletedPokemon.sprites.front_default" alt="" />
+                  </div>
+                </div>
+                <div class="col-12 col-md-6">
+                  <h2>{{seletedPokemon.name}}</h2>
+                  <p>
+                    <label for="">Type: </label>
+                    <span class="ms-1" v-for="i in seletedPokemon.types">
+                      {{i.type.name }} |
+                    </span>
+                  </p>
+                  <p>
+                    <label for="">skills: </label><br />
+                    <span v-for="i in seletedPokemon.moves">
+                      {{i.move.name }} |
+                    </span>
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -77,6 +99,9 @@
           return {
             pokemonList: [],
             viewAsDetail: false,
+            seletedPokemon: "",
+            search: "",
+            gen1Pokemon: [],
           };
         },
         //cara untuk memanggil
@@ -106,12 +131,35 @@
             this.pokemonList.push(data);
             this.pokemonList.sort((a, b) => a.id - b.id);
           },
-          viewDetailPokemon(pokemon) {
+          async viewDetailPokemon(pokemonName) {
             this.viewAsDetail = true;
+            let response = await fetch(
+              "https://pokeapi.co/api/v2/pokemon/" + pokemonName
+            );
+            let data = await response.json();
+            this.seletedPokemon = data;
+          },
+          async getGen1Pokemon() {
+            let response = await fetch(
+              "https://pokeapi.co/api/v2/pokemon?limit=151"
+            );
+            let data = await response.json();
+            let result = data.results;
+
+            this.gen1Pokemon = result;
+            console.log(this.gen1Pokemon);
+          },
+        },
+        watch: {
+          search() {
+            let filteredPokemon = this.gen1Pokemon.filter((item) => {
+              return item[0].name.includes(this.search);
+            });
           },
         },
         mounted() {
           this.getListPokemon(); // Memanggil metode methods di mounted()
+          this.Gen1Pokemon();
         },
       }).mount("#app");
     </script>
