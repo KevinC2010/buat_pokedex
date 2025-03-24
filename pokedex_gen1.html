@@ -20,6 +20,9 @@
       border-left: 2px solid rgba(255, 255, 255, 0.58);
       border-top: 2px solid rgba(255, 255, 255, 0.58);
     }
+    .suggested-pokemon {
+      cursor: pointer;
+    }
   </style>
   <body>
     <div id="app">
@@ -40,7 +43,13 @@
                 v-model="search"
               />
               <div class="mt-2">
-                <label for="">suggestion: </label>
+                <label class="me-1" for="">suggestion: </label
+                ><span
+                  class="suggested-pokemon"
+                  v-for="i in suggestedPokemon"
+                  @click="viewDetailPokemon(i.name)"
+                  >{{i.name}} |
+                </span>
               </div>
             </div>
           </div>
@@ -102,6 +111,7 @@
             seletedPokemon: "",
             search: "",
             gen1Pokemon: [],
+            suggestedPokemon: "",
           };
         },
         //methods digunakan untuk merapikan
@@ -144,17 +154,15 @@
             );
             let data = await response.json();
             let result = data.results;
-
             this.gen1Pokemon = result;
-            console.log(this.gen1Pokemon);
           },
         },
         watch: {
           search() {
-            console.log(this.search);
-            // let filteredPokemon = this.gen1Pokemon.filter((item) => {
-            //   return item[0].name.includes(this.search);
-            // });
+            let filteredPokemon = this.gen1Pokemon.filter((item) => {
+              return item.name.includes(this.search);
+            });
+            this.suggestedPokemon = filteredPokemon.slice(0, 3);
           },
         },
         mounted() {
