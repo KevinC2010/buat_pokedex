@@ -23,10 +23,14 @@
     .suggested-pokemon {
       cursor: pointer;
     }
+    .button-with-white-outline {
+      outline: 2px solid white;
+      outline-offset: 1px;
+    }
   </style>
   <body>
     <div id="app">
-      <div class="container-fluid bg-dark bg-gradient">
+      <div class="container-fluid bg-danger bg-gradient">
         <div class="container bg-dark" style="min-height: 100vh">
           <div class="row justify-content-center">
             <div class="col-5">
@@ -48,7 +52,12 @@
                   class="suggested-pokemon"
                   v-for="i in suggestedPokemon"
                   @click="viewDetailPokemon(i.name)"
-                  >{{i.name}} |
+                  ><button
+                    class="btn btn-primary button-with-white-outline"
+                    style="margin-left: 10px"
+                  >
+                    {{i.name}}
+                  </button>
                 </span>
               </div>
             </div>
@@ -72,7 +81,12 @@
 
             <div class="view-detail text-white" v-else>
               <div class="mb-5">
-                <button @click="viewAsDetail = false">View All Pokemon</button>
+                <button
+                  @click="viewAsDetail = false"
+                  class="btn btn-primary button-with-white-outline"
+                >
+                  View All Pokemon
+                </button>
               </div>
               <div class="row">
                 <div class="col-12 col-md-6">
@@ -86,6 +100,18 @@
                     <label for="">Type: </label>
                     <span class="ms-1" v-for="i in seletedPokemon.types">
                       {{i.type.name }} |
+                    </span>
+                  </p>
+                  <p>
+                    <label for="">ability: </label><br />
+                    <span v-for="i in seletedPokemon.abilities">
+                      {{i.ability.name }} |
+                    </span>
+                  </p>
+                  <p>
+                    <label for="">stats: </label><br />
+                    <span v-for="i in seletedPokemon.stats">
+                      {{i.base_stat }} |
                     </span>
                   </p>
                   <p>
@@ -114,20 +140,13 @@
             suggestedPokemon: "",
           };
         },
-        //methods digunakan untuk merapikan
         methods: {
-          // Pengambilan Data Asinkron lewat async dan await untuk mengambil data dari API.
           async getListPokemon() {
             //let response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=30") cara menambah data yang didapatkan
             let response = await fetch("https://pokeapi.co/api/v2/pokemon");
             let data = await response.json();
             let results = data.results;
-            //let test = this.getEachPokemon        ini cara yang pake function biasa harus ditampung dulu kedalam sebuah variabel untuk menampung function getEachPokemon
-            //results.forEach(function (results){
-            //  test(results)
-            //});
 
-            //ni cara arrow function maka tidak perlu ditampung kedalam vaiabel
             results.forEach((item) => {
               this.getEachPokemon(item);
             });
@@ -162,7 +181,7 @@
             let filteredPokemon = this.gen1Pokemon.filter((item) => {
               return item.name.includes(this.search);
             });
-            this.suggestedPokemon = filteredPokemon.slice(0, 3);
+            this.suggestedPokemon = filteredPokemon.slice(0, 4);
           },
         },
         mounted() {
