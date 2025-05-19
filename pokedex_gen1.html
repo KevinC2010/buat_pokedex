@@ -27,6 +27,72 @@
       outline: 2px solid white;
       outline-offset: 1px;
     }
+    .ability-badge {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 15px;
+      margin-left: 5px;
+      color: white; /* Teks berwarna putih */
+      background-color: #0d6efd;
+    }
+    .type-badge {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 15px;
+      margin-left: 5px;
+      color: white; /* Teks berwarna putih */
+    }
+    .normal {
+      background-color: #a8a878;
+    }
+    .fire {
+      background-color: #f08030;
+    }
+    .water {
+      background-color: #6890f0;
+    }
+    .grass {
+      background-color: #78c850;
+    }
+    .electric {
+      background-color: #f8d030;
+    }
+    .fighting {
+      background-color: #c03028;
+    }
+    .poison {
+      background-color: #a040b1;
+    }
+    .ground {
+      background-color: #e0c068;
+    }
+    .flying {
+      background-color: #a890f0;
+    }
+    .psychic {
+      background-color: #f85888;
+    }
+    .rock {
+      background-color: #b8a038;
+    }
+    .bug {
+      background-color: #a8b820;
+    }
+    .ghost {
+      background-color: #705898;
+    }
+    .dark {
+      background-color: #705848;
+    }
+    .dragon {
+      background-color: #7038f8;
+    }
+    .steel {
+      background-color: #b8b8d0;
+    }
+    .fairy {
+      background-color: #f9a3a3;
+    }
   </style>
   <body>
     <div id="app">
@@ -67,7 +133,7 @@
             <div class="view-all text-white" v-if="!viewAsDetail">
               <div class="row px-5">
                 <div
-                  class="col-12 col-md-4 col-lg-3 mb-3"
+                  class="col-11 col-md-3 col-lg-2 mb-3"
                   v-for="items in pokemonList"
                   @click="viewDetailPokemon(items.name)"
                 >
@@ -89,7 +155,7 @@
                 </button>
               </div>
               <div class="row">
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-5">
                   <div class="card">
                     <img :src="seletedPokemon.sprites.front_default" alt="" />
                   </div>
@@ -98,26 +164,42 @@
                   <h2>{{seletedPokemon.name}}</h2>
                   <p>
                     <label for="">Type: </label>
-                    <span class="ms-1" v-for="i in seletedPokemon.types">
-                      {{i.type.name }} |
+                    <span v-for="i in seletedPokemon.types">
+                      <span :class="['type-badge', i.type.name.toLowerCase()]">
+                        {{i.type.name }}
+                      </span>
                     </span>
                   </p>
                   <p>
-                    <label for="">ability: </label><br />
+                    <label for="">ability: </label>
                     <span v-for="i in seletedPokemon.abilities">
-                      {{i.ability.name }} |
+                      <span
+                        :class="['ability-badge', i.ability.name.toLowerCase()]"
+                      >
+                        {{i.ability.name }}
+                      </span>
                     </span>
+                  </p>
+                  <p>
+                    <label for=""
+                      >Height:
+                      <span>
+                        {{(seletedPokemon.height / 100).toFixed(2) }} m</span
+                      ></label
+                    ><br />
+                  </p>
+                  <p>
+                    <label for=""
+                      >Weight:
+                      <span>
+                        {{(seletedPokemon.weight / 10).toFixed(2) }} kg</span
+                      ></label
+                    ><br />
                   </p>
                   <p>
                     <label for="">stats: </label><br />
                     <span v-for="i in seletedPokemon.stats">
                       {{i.base_stat }} |
-                    </span>
-                  </p>
-                  <p>
-                    <label for="">skills: </label><br />
-                    <span v-for="i in seletedPokemon.moves">
-                      {{i.move.name }} |
                     </span>
                   </p>
                 </div>
@@ -143,7 +225,9 @@
         methods: {
           async getListPokemon() {
             //let response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=30") cara menambah data yang didapatkan
-            let response = await fetch("https://pokeapi.co/api/v2/pokemon");
+            let response = await fetch(
+              "https://pokeapi.co/api/v2/pokemon?limit=101"
+            );
             let data = await response.json();
             let results = data.results;
 
