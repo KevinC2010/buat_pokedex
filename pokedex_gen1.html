@@ -10,6 +10,7 @@
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous"
     />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <style>
     .card {
@@ -196,11 +197,15 @@
                       ></label
                     ><br />
                   </p>
-                  <p>
-                    <label for="">stats: </label><br />
+                  <p style="background-color: white">
+                    <!-- <label for="">stats: </label><br />
                     <span v-for="i in seletedPokemon.stats">
                       {{i.base_stat }} |
-                    </span>
+                    </span> -->
+                    <!-- <span style="position: absolute; top: 0; left: 50%"
+                      >{{ seletedPokemon.stats[0].base_stat }}</span
+                    > -->
+                    <canvas id="pokemonChart" width="400" height="400"></canvas>
                   </p>
                 </div>
               </div>
@@ -250,6 +255,7 @@
             );
             let data = await response.json();
             this.seletedPokemon = data;
+            this.drawChart(this.seletedPokemon);
           },
           async getGen1Pokemon() {
             let response = await fetch(
@@ -258,6 +264,39 @@
             let data = await response.json();
             let result = data.results;
             this.gen1Pokemon = result;
+          },
+          async drawChart(seletedPokemon) {
+            const ctx = document
+              .getElementById("pokemonChart")
+              .getContext("2d");
+            const stats = this.seletedPokemon.stats.map(
+              (stat) => stat.base_stat
+            );
+            const labels = this.seletedPokemon.stats.map(
+              (stat) => stat.stat.name
+            );
+            new Chart(ctx, {
+              type: "radar",
+              data: {
+                labels: labels,
+                datasets: [
+                  {
+                    label: "Stats",
+                    data: stats,
+                    backgroundColor: "rgba(255, 99, 132, 0.2)",
+                    borderColor: "rgba(255, 99, 132, 1)",
+                    borderWidth: 1,
+                  },
+                ],
+              },
+              options: {
+                scales: {
+                  r: {
+                    beginAtZero: true,
+                  },
+                },
+              },
+            });
           },
         },
         watch: {
@@ -271,6 +310,7 @@
         mounted() {
           this.getListPokemon(); // Memanggil metode methods di mounted()
           this.getGen1Pokemon();
+          this.drawChart();
         },
       }).mount("#app");
     </script>
